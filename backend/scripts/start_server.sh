@@ -1,15 +1,26 @@
 #!/bin/bash
+set -e
 
-# Navigate to the backend directory
+APP_DIR="/home/ec2-user/app"
+ECOSYSTEM_CONFIG="/home/ec2-user/ecosystem.config.js"
+
 echo "Navigating to the backend directory..."
-cd /srv/react-node-mysql-app/backend || { echo "Failed to navigate to backend directory"; exit 1; }
+cd "$APP_DIR" || { echo "Failed to navigate to backend directory"; exit 1; }
 
-# Start the server using pm2
 echo "Starting the Node.js server using pm2..."
-pm2 start npm --name "nodeapp-backend" -- start
+
+# Use ecosystem config if available, otherwise start directly
+if [ -f "$ECOSYSTEM_CONFIG" ]; then
+    pm2 start "$ECOSYSTEM_CONFIG" --update-env
+else
+    pm2 start npm --name "nodeapp-backend" -- start
+fi
 
 # Save the pm2 process list
 echo "Saving the pm2 process list..."
-pm2 save
+pm2 save --force
 
-echo "Node.js server started successfully."
+echo "Node.js server started successfully"
+pm2 status
+
+exit 0

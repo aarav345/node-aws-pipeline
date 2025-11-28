@@ -1,11 +1,14 @@
 #!/bin/bash
+set -e
 
-# Navigate to the backend directory
+APP_DIR="/home/ec2-user/app"
+
 echo "Navigating to the backend directory..."
-cd /srv/react-node-mysql-app/backend
-echo "Successfully navigated to /srv/react-node-mysql-app/backend"
+cd "$APP_DIR" || { echo "Failed to navigate to $APP_DIR"; exit 1; }
+echo "Successfully navigated to $APP_DIR"
 
-# Run npm install
 echo "Running npm install to install dependencies..."
-npm install
+npm ci --production || npm install --production
+
 echo "npm install completed successfully"
+exit 0

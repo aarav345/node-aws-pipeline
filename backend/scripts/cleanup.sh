@@ -1,11 +1,16 @@
 #!/bin/bash
+set -e
 
-# Ensure the backend directory exists
+APP_DIR="/home/ec2-user/app"
+
 echo "Ensuring the backend directory exists..."
-sudo mkdir -p /srv/react-node-mysql-app/backend
-echo "Backend directory is ready at /srv/react-node-mysql-app/backend"
+mkdir -p "$APP_DIR"
+echo "Backend directory is ready at $APP_DIR"
 
-# Clear all files and hidden files in the backend directory
-echo "Clearing all files and hidden files in the backend directory..."
-sudo rm -rf /srv/react-node-mysql-app/backend/{*,.*} 2>/dev/null
-echo "All files and hidden files have been cleared from the backend directory"
+# Clear old files but keep directory structure
+echo "Clearing old application files..."
+cd "$APP_DIR"
+rm -rf node_modules package-lock.json .env 2>/dev/null || true
+
+echo "Cleanup completed"
+exit 0
